@@ -25,7 +25,6 @@ fn main() {
         let handle = thread::spawn(move || {
             thread::sleep(Duration::from_millis(250));
             // TODO: You must take an action before you update a shared value
-            let mut status_shared = status_shared ;
             status_shared.jobs_completed += 1;
         });
         handles.push(handle);
