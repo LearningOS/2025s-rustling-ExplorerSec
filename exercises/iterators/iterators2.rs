@@ -6,7 +6,7 @@
 // Execute `rustlings hint iterators2` or use the `hint` watch subcommand for a
 // hint.
 
-// I AM NOT DONE
+// I AM DONE
 
 // Step 1.
 // Complete the `capitalize_first` function.
@@ -15,7 +15,13 @@ pub fn capitalize_first(input: &str) -> String {
     let mut c = input.chars();
     match c.next() {
         None => String::new(),
-        Some(first) => ???,
+        Some(first) => {
+            let mut s =String::from(first.to_ascii_uppercase());
+            while let Some(more) = c.next(){
+                s.push(more);
+            }
+            return s;
+        },
     }
 }
 
@@ -24,7 +30,11 @@ pub fn capitalize_first(input: &str) -> String {
 // Return a vector of strings.
 // ["hello", "world"] -> ["Hello", "World"]
 pub fn capitalize_words_vector(words: &[&str]) -> Vec<String> {
-    vec![]
+    let mut v = vec![];
+    for word in words{
+        v.push(capitalize_first(word));
+    }
+    return v;
 }
 
 // Step 3.
@@ -32,7 +42,11 @@ pub fn capitalize_words_vector(words: &[&str]) -> Vec<String> {
 // Return a single string.
 // ["hello", " ", "world"] -> "Hello World"
 pub fn capitalize_words_string(words: &[&str]) -> String {
-    String::new()
+    let mut s = String::new();
+    for word in words{
+        s.push_str(capitalize_first(word).as_str());  // 发现对生命周期还有疑问，这相当于直接&，怎么保证能离开作用域的？
+    }
+    return s;
 }
 
 #[cfg(test)]
