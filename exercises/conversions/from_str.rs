@@ -31,7 +31,7 @@ enum ParsePersonError {
     ParseInt(ParseIntError),
 }
 
-// I AM NOT DONE
+// I AM DONE
 
 // Steps:
 // 1. If the length of the provided string is 0, an error should be returned
@@ -48,10 +48,25 @@ enum ParsePersonError {
 // As an aside: `Box<dyn Error>` implements `From<&'_ str>`. This means that if
 // you want to return a string error message, you can do so via just using
 // return `Err("my error message".into())`.
-
 impl FromStr for Person {
     type Err = ParsePersonError;
+    
     fn from_str(s: &str) -> Result<Person, Self::Err> {
+        if s.len()==0{
+            return Err(ParsePersonError::Empty);
+        }
+        let vecs:Vec<&str> = s.split(',').collect();
+        if vecs.len() !=2 {
+            return Err(ParsePersonError::BadLen);
+        }
+        if vecs[0].len()==0{
+            return Err(ParsePersonError::NoName);
+        }
+
+        match vecs[1].parse::<usize>(){
+            Ok(val) => Ok(Person{name:vecs[0].into(),age:val}),
+            Err(e) => Err(ParsePersonError::ParseInt(e))
+        }
     }
 }
 
