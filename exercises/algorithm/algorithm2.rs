@@ -7,6 +7,7 @@
 use std::fmt::{self, Display, Formatter};
 use std::ptr::NonNull;
 use std::vec::*;
+use std::ptr::swap;
 
 #[derive(Debug)]
 struct Node<T> {
@@ -72,8 +73,57 @@ impl<T> LinkedList<T> {
             },
         }
     }
-	pub fn reverse(&mut self){
-		// TODO
+	pub fn reverse(&mut self) where T:Clone{
+		
+        // 本想写一个较高性能的实现，只交换每个节点的前驱和后继指针，但出了一些问题，暂未解决
+        // 先放一个开销较大的实现，它对所有节点进行了重新的构造
+        let mut list = LinkedList::<T>::new();
+        let mut np =&self.end;
+        while let Some(np_node) = *np{
+            let val = unsafe{(*np_node.as_ptr()).val.clone()};
+            list.add(val);
+            np = unsafe{&(*np_node.as_ptr()).prev};
+        }
+        *self = list;
+
+        /* 下面的代码有问题 */
+        // /* 交换所有节点的前驱和后继 */
+        // // 标记当前节点的奇偶，确定下一个是“前”或“后”
+        // let mut flag:bool = false; 
+        // // 一共修改 length 个节点，就是交换 length 对的数据
+        // let mut np_now = &self.start; 
+        // //for _ in 1..=self.length{
+        //  //  let np_node_now = (*np_now).unwrap(); // 拿节点
+        // while let Some(np_node_now) = (*np_now){
+        //    unsafe{
+        //     let next;
+        //     match (*np_node_now.as_ptr()).next{
+        //         Some(x) => next = Some(x),
+        //         None => next = None
+        //     }
+        //     let prev;
+        //     match (*np_node_now.as_ptr()).prev{
+        //         Some(x) => prev = Some(x),
+        //         None => prev = None
+        //     }
+        //     (*np_node_now.as_ptr()).prev =next;
+        //     (*np_node_now.as_ptr()).next =prev;
+        //     //let prev =(*np_node_now.as_ptr()).prev;
+        //     //(*np_node_now.as_ptr()).next = prev; 
+        //     //(*np_node_now.as_ptr()).prev = Some(next);
+        //    }
+        //    
+        //    if flag{
+        //     unsafe{np_now =&(*np_node_now.as_ptr()).next}  
+        //    }else{
+        //     unsafe{np_now =&(*np_node_now.as_ptr()).prev} 
+        //    }
+        //    flag = !flag; // 取反奇偶
+        // }
+        // /* 交换双向链表上记录的首和尾 */
+        // let tmp = self.start; // 引用是实现了 Copy 的
+        // self.start = self.end;
+        // self.end = tmp;
 	}
 }
 
