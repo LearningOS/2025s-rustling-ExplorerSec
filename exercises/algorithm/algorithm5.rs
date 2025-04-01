@@ -3,7 +3,7 @@
 	This problem requires you to implement a basic BFS algorithm
 */
 
-//I AM NOT DONE
+//I AM DONE
 use std::collections::VecDeque;
 
 // Define a graph
@@ -27,10 +27,30 @@ impl Graph {
 
     // Perform a breadth-first search on the graph, return the order of visited nodes
     fn bfs_with_return(&self, start: usize) -> Vec<usize> {
-        
-		//TODO
-
         let mut visit_order = vec![];
+        let mut idx = 0;
+        visit_order.push(start);
+        let mut newadd =1;
+        while newadd>0 {
+            newadd =0;
+            // i 是表中的搜索索引
+            for i in idx..visit_order.len(){ 
+                // x 是从广度上刚找到的元素，如果表中没有，就加入进去
+                'find_add: for &x in self.adj[visit_order[i]].iter(){
+                    // 判断 x 是否在表中 
+                    for j in 0..visit_order.len(){
+                        if visit_order[j]==x {
+                            continue 'find_add; // x 已经在表中
+                        }
+                    }
+                    // x 不再表中 
+                    visit_order.push(x); // 添加新元素
+                    newadd +=1;
+                }
+            }
+            idx = visit_order.len()-newadd; // 更新索引位置   
+        }
+    
         visit_order
     }
 }
