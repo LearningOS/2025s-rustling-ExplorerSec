@@ -2,7 +2,7 @@
 	heap
 	This question requires you to implement a binary heap function
 */
-// I AM NOT DONE
+// I AM DONE
 
 use std::cmp::Ord;
 use std::default::Default;
@@ -37,7 +37,36 @@ where
     }
 
     pub fn add(&mut self, value: T) {
-        //TODO
+        // 可以假设原堆是有序的
+        if self.count == 0{
+            // 一度以为自己算法有问题，最后经过调试发现
+            // 内部的 item[0] 被已经给出的代码框架初始化为了 0
+            // 这个真的绷不住
+            // 所以这个 if 是给它打的补丁
+            self.items[0] = value; 
+        } else {
+            self.items.push(value);
+        }
+        let mut idx_up =self.count;
+        while (self.comparator)(&self.items[idx_up],&self.items[idx_up/2]){
+            self.items.swap(idx_up,idx_up/2);
+            idx_up = idx_up/2;
+
+            let mut idx_down = idx_up;
+            loop{
+                let mut idx_child = self.smallest_child_idx(idx_down);
+                if idx_child > 0 && (self.comparator)(&self.items[idx_child],&self.items[idx_down]){
+                    self.items.swap(idx_down,idx_child);
+                    idx_down = idx_child;
+                }else{
+                    break;
+                }
+            }
+
+
+            
+        }
+        self.count +=1;
     }
 
     fn parent_idx(&self, idx: usize) -> usize {
@@ -57,8 +86,13 @@ where
     }
 
     fn smallest_child_idx(&self, idx: usize) -> usize {
-        //TODO
-		0
+        if idx*2 >= self.count{
+            0
+        }else if idx*2+1 < self.count && (self.comparator)(&self.items[idx*2+1],&self.items[idx*2]){
+            idx*2+1
+        }else{
+            idx*2
+        }
     }
 }
 
@@ -84,8 +118,26 @@ where
     type Item = T;
 
     fn next(&mut self) -> Option<T> {
-        //TODO
-		None
+        if self.count == 0 {
+            None
+        }else{
+            self.count -=1;
+            self.items.swap(0,self.count);
+            let val = self.items.pop();
+            let mut idx = 0;
+            loop{
+                let mut idx_child = self.smallest_child_idx(idx);
+                if idx_child > 0 && (self.comparator)(&self.items[idx_child],&self.items[idx]){
+                    self.items.swap(idx,idx_child);
+                    idx = idx_child;
+                }else{
+                    break;
+                }
+            }
+            val
+        }
+        
+		
     }
 }
 
