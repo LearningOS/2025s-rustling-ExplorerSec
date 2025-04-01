@@ -4,14 +4,11 @@
 	you can use bubble sorting, insertion sorting, heap sorting, etc.
 */
 // I AM DONE
-
-fn sort<T>(array: &mut [T]) where T:PartialOrd+Copy{
+fn sort<T>(array: &mut [T]) where T:PartialOrd{
 	for i in 0..array.len(){
         for j in i..array.len(){
             if array[i]>array[j]{
-                let tmp = array[i];
-                array[i] = array[j];
-                array[j] = tmp;
+                array.swap(i,j);
             }
         }
     }
