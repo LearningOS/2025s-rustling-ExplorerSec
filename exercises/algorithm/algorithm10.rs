@@ -2,7 +2,7 @@
 	graph
 	This problem requires you to implement a basic graph functio
 */
-// I AM NOT DONE
+// I AM DONE
 
 use std::collections::{HashMap, HashSet};
 use std::fmt;
@@ -29,7 +29,17 @@ impl Graph for UndirectedGraph {
         &self.adjacency_table
     }
     fn add_edge(&mut self, edge: (&str, &str, i32)) {
-        //TODO
+        // 这里是无向图
+        let (node1,node2,val) = edge; 
+        match self.adjacency_table.get_mut(node1){
+            Some(vec) => {vec.push((String::from(node2),val));},
+            None => {self.adjacency_table_mutable().insert(String::from(node1),vec!((String::from(node2),val)));},
+        }
+        match self.adjacency_table.get_mut(node2){
+            Some(vec) => {vec.push((String::from(node1),val));},
+            None => {self.adjacency_table_mutable().insert(String::from(node2),vec!((String::from(node1),val)));},
+        }
+        
     }
 }
 pub trait Graph {
@@ -37,11 +47,15 @@ pub trait Graph {
     fn adjacency_table_mutable(&mut self) -> &mut HashMap<String, Vec<(String, i32)>>;
     fn adjacency_table(&self) -> &HashMap<String, Vec<(String, i32)>>;
     fn add_node(&mut self, node: &str) -> bool {
-        //TODO
-		true
+        self.adjacency_table_mutable().insert(String::from(node),vec![]).is_some()
     }
     fn add_edge(&mut self, edge: (&str, &str, i32)) {
-        //TODO
+        // 这里当有向图实现，反正在上面的重新实现会将它覆盖的
+        let (node1,node2,val) = edge; 
+        match self.adjacency_table_mutable().get_mut(node1){
+            Some(vec) => {vec.push((String::from(node2),val));},
+            None => {self.adjacency_table_mutable().insert(String::from(node1),vec!((String::from(node2),val)));},
+        }
     }
     fn contains(&self, node: &str) -> bool {
         self.adjacency_table().get(node).is_some()
